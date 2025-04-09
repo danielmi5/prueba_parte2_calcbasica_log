@@ -8,7 +8,7 @@ interface GestionFicheros {
     fun existeDirectorio(ruta: String): Boolean
     fun crearDirectorio(ruta: String)
     fun crearFichero(ruta: String)
-    fun obtenerUltimoFicheroModificado(ruta: String): File
+    fun obtenerRutaUltimoFicheroModificado(ruta: String): String
     fun leerFichero(ruta: String): List<String>
     fun tieneFicheros(ruta: String): Boolean
 }

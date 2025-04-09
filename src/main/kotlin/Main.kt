@@ -1,7 +1,9 @@
 package es.iesraprog2425.pruebaes
 
 import es.iesraprog2425.pruebaes.app.Calculadora
+import es.iesraprog2425.pruebaes.service.GestorInicio
 import es.iesraprog2425.pruebaes.ui.Consola
+import es.iesraprog2425.pruebaes.utils.Ficheros
 import java.io.File
 
 /*
@@ -28,7 +30,13 @@ fun main() {
 */
 
 fun main(args: Array <String>) {
+    val consola = Consola()
+    val fich = Ficheros(consola)
+    val calc = Calculadora(consola)
+    val valores = arrayOf<String>()
+    val gestor = GestorInicio(consola, fich, calc)
 
+    gestor.iniciar(valores)
 
 }
 

@@ -48,5 +48,14 @@ class Consola : IEntradaSalida {
         }
     }
 
+    override fun pausar() {
+        pedirInfo("Introduce ENTER para continuar...")
+    }
+
+    override fun mostrarLista(lista: List<String>) {
+        for (s in lista) {
+            mostrar(s)
+        }
+    }
 }
 

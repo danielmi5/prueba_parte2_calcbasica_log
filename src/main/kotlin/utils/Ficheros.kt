@@ -30,7 +30,7 @@ class Ficheros(private val ui: IEntradaSalida) : GestionFicheros {
         File(ruta).createNewFile()
     }
 
-    override fun obtenerUltimoFicheroModificado(ruta: String) : File{
+    override fun obtenerRutaUltimoFicheroModificado(ruta: String) : String{
         val directorio = File(ruta)
 
         var archivoMax = directorio
@@ -40,7 +40,7 @@ class Ficheros(private val ui: IEntradaSalida) : GestionFicheros {
             max = it.lastModified()
             archivoMax = it
         }
-        return archivoMax
+        return archivoMax.absolutePath
     }
 
     override fun tieneFicheros(ruta: String): Boolean {
