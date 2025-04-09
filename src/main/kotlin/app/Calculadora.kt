@@ -1,11 +1,13 @@
 package es.iesraprog2425.pruebaes.app
 
 import es.iesraprog2425.pruebaes.model.Operadores
+import es.iesraprog2425.pruebaes.service.GestorLogs
+import es.iesraprog2425.pruebaes.service.ServiceLog
 import es.iesraprog2425.pruebaes.ui.IEntradaSalida
 import es.iesraprog2425.pruebaes.utils.GestionFicheros
 import java.io.File
 
-class Calculadora(private val ui: IEntradaSalida) {
+class Calculadora(private val ui: IEntradaSalida, private val gestorLog: ServiceLog) {
 
     private fun pedirNumero(msj: String, msjError: String = "Número no válido!"): Double {
         return ui.pedirDouble(msj) ?: throw InfoCalcException(msjError)
@@ -26,16 +28,26 @@ class Calculadora(private val ui: IEntradaSalida) {
         }
 
     fun iniciar() {
+        ui.pausar()
+        val ruta = "./log/"
+        val rutaFichero = gestorLog.crearFicheroLog(ruta)
+        var registro = ""
         do {
             try {
                 ui.limpiarPantalla()
                 val (numero1, operador, numero2) = pedirInfo()
                 val resultado = realizarCalculo(numero1, operador, numero2)
-                ui.mostrar("Resultado: %.2f".format(resultado))
+                val lineaResultado = "$numero1 ${operador.simbolos[0]} $numero2 = %.2f".format(resultado)
+                ui.mostrar(lineaResultado)
+                registro = "OPERACIÓN - " + lineaResultado
             } catch (e: NumberFormatException) {
                 ui.mostrarError(e.message ?: "Se ha producido un error!")
+                registro = "ERROR - " + e.message.toString()
             } catch (e: InfoCalcException) {
                 ui.mostrarError(e.message ?: "Se ha producido un error!")
+                registro = "ERROR - " + e.message.toString()
+            } finally {
+                gestorLog.añadirRegistro(rutaFichero, registro)
             }
         } while (ui.preguntar())
         ui.limpiarPantalla()

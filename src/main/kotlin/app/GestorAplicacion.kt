@@ -1,13 +1,13 @@
-package es.iesraprog2425.pruebaes.service
+package es.iesraprog2425.pruebaes.app
 
-import es.iesraprog2425.pruebaes.app.Calculadora
 import es.iesraprog2425.pruebaes.model.Operadores
+import es.iesraprog2425.pruebaes.service.ServiceLog
 import es.iesraprog2425.pruebaes.ui.IEntradaSalida
 import es.iesraprog2425.pruebaes.utils.GestionFicheros
 
-class GestorInicio(private val ui: IEntradaSalida, private val fich: GestionFicheros, val calculadora: Calculadora) {
+class GestorAplicacion(private val ui: IEntradaSalida, private val fich: GestionFicheros, val calculadora: Calculadora) {
 
-    fun iniciar(args : Array <String>){
+    fun ejecutar(args : Array <String>){
         when (args.size) {
             0 -> {
                 val ruta = "./log"
@@ -36,7 +36,7 @@ class GestorInicio(private val ui: IEntradaSalida, private val fich: GestionFich
     }
 
 
-    fun comprobarRuta(ruta: String){
+    private fun comprobarRuta(ruta: String){
         if (!fich.existeDirectorio(ruta)) {
             fich.crearDirectorio(ruta)
             ui.mostrar("Ruta $ruta creada")
