@@ -8,6 +8,7 @@ import es.iesraprog2425.pruebaes.utils.GestionFicheros
 import java.io.File
 
 class Calculadora(private val ui: IEntradaSalida, private val gestorLog: ServiceLog) {
+    private var rutaFichero = gestorLog.obtenerUltimoLog("./log")
 
     private fun pedirNumero(msj: String, msjError: String = "Número no válido!"): Double {
         return ui.pedirDouble(msj) ?: throw InfoCalcException(msjError)
@@ -29,8 +30,7 @@ class Calculadora(private val ui: IEntradaSalida, private val gestorLog: Service
 
     fun iniciar() {
         ui.pausar()
-        val ruta = "./log/"
-        val rutaFichero = gestorLog.crearFicheroLog(ruta)
+
         var registro = ""
         do {
             try {
@@ -55,24 +55,37 @@ class Calculadora(private val ui: IEntradaSalida, private val gestorLog: Service
 
     fun iniciar(num1: Double, num2: Double, operador: Operadores) {
         ui.pausar()
-        var triple = Triple(num1, operador, num2)
-
-        ui.pausar()
+        var triple: Triple<Double, Operadores, Double> = Triple(num1, operador, num2)
         ui.limpiarPantalla()
+        var registro = ""
         var cont = 0
         do {
             try {
                 ui.limpiarPantalla()
                 if (cont == 0) cont++ else triple = pedirInfo()
                 val resultado = realizarCalculo(triple.first, triple.second, triple.third)
-                ui.mostrar("Resultado: %.2f".format(resultado))
+                val lineaResultado = "${triple.first} ${triple.second.simbolos[0]} ${triple.third} = %.2f".format(resultado)
+                ui.mostrar(lineaResultado)
+                registro = "OPERACIÓN - " + lineaResultado
             } catch (e: NumberFormatException) {
                 ui.mostrarError(e.message ?: "Se ha producido un error!")
+                registro = "ERROR - " + e.message.toString()
             } catch (e: InfoCalcException) {
                 ui.mostrarError(e.message ?: "Se ha producido un error!")
+                registro = "ERROR - " + e.message.toString()
+            } finally {
+                gestorLog.añadirRegistro(rutaFichero, registro)
             }
         } while (ui.preguntar())
         ui.limpiarPantalla()
+    }
+
+    fun obtenerRutaFichero(ruta: String){
+        rutaFichero = ruta
+    }
+
+    fun obtenerRutaDir(ruta: String){
+        rutaFichero = gestorLog.crearFicheroLog(ruta)
     }
 
 

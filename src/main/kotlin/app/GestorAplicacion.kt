@@ -11,32 +11,51 @@ class GestorAplicacion(private val ui: IEntradaSalida, private val fich: Gestion
         when (args.size) {
             0 -> {
                 val ruta = "./log"
-                comprobarRuta(ruta)
-                calculadora.iniciar()
+                val rutaFichero = comprobarRuta(ruta)
+                if (rutaFichero == null) {
+                    calculadora.obtenerRutaDir(ruta)
+                    calculadora.iniciar()
+                } else {
+                    calculadora.obtenerRutaFichero(rutaFichero)
+                    calculadora.iniciar()
+                }
             }
 
             1 -> {
                 val ruta = args[0]
-                comprobarRuta(ruta)
-                calculadora.iniciar()
+                val rutaFichero = comprobarRuta(ruta)
+                if (rutaFichero == null) {
+                    calculadora.obtenerRutaDir(ruta)
+                    calculadora.iniciar()
+                } else {
+                    calculadora.obtenerRutaFichero(rutaFichero)
+                    calculadora.iniciar()
+                }
             }
 
             4 -> {
                 val ruta = args[0]
-                val num1 = args[1].toDoubleOrNull() ?: return
-                val num2 = args[3].toDoubleOrNull() ?: return
-                val operador = Operadores.getOperador(args[2].trim()[0]) ?: return
+                val num1 = args[1].toDoubleOrNull() ?: throw IllegalArgumentException("Valor no válido")
+                val num2 = args[3].toDoubleOrNull() ?: throw IllegalArgumentException("Valor no válido")
+                val operador = Operadores.getOperador(args[2].trim()[0]) ?: throw IllegalArgumentException("Operador no válido")
 
-                calculadora.iniciar(num1,num2,operador)
+
+                if (fich.existeFichero(ruta)) {
+                    calculadora.obtenerRutaFichero(ruta)
+                } else if (fich.existeDirectorio(ruta)){
+                    calculadora.obtenerRutaDir(ruta)
+                } else throw IllegalArgumentException("Ruta no existente")
+
+                calculadora.iniciar(num1, num2, operador)
             }
             else -> {
-                ui.mostrarError("Número de argumentos no válido.")
+                throw IllegalArgumentException("Número de argumentos no válido.")
             }
         }
     }
 
 
-    private fun comprobarRuta(ruta: String){
+    private fun comprobarRuta(ruta: String): String?{
         if (!fich.existeDirectorio(ruta)) {
             fich.crearDirectorio(ruta)
             ui.mostrar("Ruta $ruta creada")
@@ -46,8 +65,12 @@ class GestorAplicacion(private val ui: IEntradaSalida, private val fich: Gestion
             } else {
                 val ultimo = fich.obtenerRutaUltimoFicheroModificado(ruta)
                 val lineas = fich.leerFichero(ultimo)
+                ui.mostrar("Lineas del último log realizado\n--------------------------------------")
                 ui.mostrarLista(lineas)
+
+                return ultimo
             }
         }
+        return null
     }
 }

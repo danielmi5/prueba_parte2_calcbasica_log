@@ -16,6 +16,9 @@ class GestorLogs(private val fich: GestionFicheros) : ServiceLog {
         fich.aniadirLinea(ruta, "${LocalDateTime.now().format(formateoLog)} -> $linea")
     }
 
+    override fun obtenerUltimoLog(ruta: String): String {
+        return fich.obtenerRutaUltimoFicheroModificado(ruta)
+    }
 
     companion object {
         val formateo = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")

@@ -44,7 +44,8 @@ class Ficheros(private val ui: IEntradaSalida) : GestionFicheros {
     }
 
     override fun tieneFicheros(ruta: String): Boolean {
-        return File(ruta).listFiles() != null
+        val ficheros = File(ruta).listFiles()
+        return  ficheros != null && ficheros.isNotEmpty()
     }
 
     override fun leerFichero(ruta: String): List<String> {
