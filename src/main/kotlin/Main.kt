@@ -34,11 +34,10 @@ fun main(args: Array <String>) {
     val fich = Ficheros(consola)
     val gestorLog = GestorLogs(fich)
     val calc = Calculadora(consola, gestorLog)
-    val valores = arrayOf<String>("./logv2", "12", "*","12")
     val gestor = GestorAplicacion(consola, fich, calc)
 
     try {
-        gestor.ejecutar(valores)
+        gestor.ejecutar(args)
     } catch (e: Exception){
         consola.mostrarError(e.message.toString())
     }
